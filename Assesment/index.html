@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assessment</title>
+  <link rel="stylesheet" href="./css/icon.css">
+  <link href="./css/css.css" rel="stylesheet">
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="./scripts/jquery.min.js"></script>
+  <script src="./scripts/bootstrap.min.js"></script>
+  <script src="./scripts/index.js" charset="utf-8"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="login-form table">
+      <form>
+        <div class="avatar"><i class="material-icons">&#xE7FF;</i></div>
+        <h4 class="modal-title">Login to Your Account</h4>
+        <div class="form-group">
+          <input type="text" id="username" class="form-control" placeholder="Username" required="required">
+        </div>
+        <div class="form-group">
+          <input type="password" id="password" class="form-control" placeholder="Password" required="required">
+        </div>
+        <div class="form-group small clearfix" id="rememberOption" hidden>
+          <label class="checkbox-inline"><input id="remember" type="checkbox"> Remember me</label>
+          <!-- <a href="#" class="forgot-link">Forgot Password?</a> -->
+        </div>
+        <input type="button" id="loginBtn" class="btn btn-primary btn-block btn-lg" value="Login">
+      </form>
+      <div id="warn" class="alert alert-danger" role="alert" hidden></div>
+      <div id="msg" class="alert alert-success" role="alert" hidden></div>
+      <div class="text-center small">Don't have an account? <a href="#">Sign up</a></div>
+    </div>
+    <div class="dash" hidden>
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Assessment</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Add Member</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Add Sahayak Sevak</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+          <div class="limiter">
+            <div class="container-table100">
+              <div class="wrap-table100">
+                <div class="table100 ver1 m-b-110">
+                  <div class="table100-head">
+                    <table>
+                      <thead>
+                        <tr class="row100 head">
+                          <th class="cell100 column1">Class name</th>
+                          <th class="cell100 column2">Type</th>
+                          <th class="cell100 column3">Hours</th>
+                          <th class="cell100 column4">Trainer</th>
+                          <th class="cell100 column5">Spots</th>
+                        </tr>
+                      </thead>
+                    </table>
+                  </div>
+
+                  <div class="table100-body js-pscroll">
+                    <table>
+                      <tbody>
+                        <tr class="row100 body">
+                          <td class="cell100 column1">Like a butterfly</td>
+                          <td class="cell100 column2">Boxing</td>
+                          <td class="cell100 column3">9:00 AM - 11:00 AM</td>
+                          <td class="cell100 column4">Aaron Chapman</td>
+                          <td class="cell100 column5">10</td>
+                        </tr>
+
+                        <tr class="row100 body">
+                          <td class="cell100 column1">Mind & Body</td>
+                          <td class="cell100 column2">Yoga</td>
+                          <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+                          <td class="cell100 column4">Adam Stewart</td>
+                          <td class="cell100 column5">15</td>
+                        </tr>
+
+                        <tr class="row100 body">
+                          <td class="cell100 column1">Crit Cardio</td>
+                          <td class="cell100 column2">Gym</td>
+                          <td class="cell100 column3">9:00 AM - 10:00 AM</td>
+                          <td class="cell100 column4">Aaron Chapman</td>
+                          <td class="cell100 column5">10</td>
+                        </tr>
+
+                        <tr class="row100 body">
+                          <td class="cell100 column1">Wheel Pose Full Posture</td>
+                          <td class="cell100 column2">Yoga</td>
+                          <td class="cell100 column3">7:00 AM - 8:30 AM</td>
+                          <td class="cell100 column4">Donna Wilson</td>
+                          <td class="cell100 column5">15</td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">Add Member</div>
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">Add Sevak</div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
