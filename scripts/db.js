@@ -47,19 +47,43 @@ class DB {
           resolve({
             name: cursor.value.name,
             password: cursor.value.password,
-            remember: cursor.value.remember
+            remember: cursor.value.remember,
+            isbn: cursor.value.isbn
           })
       }
     });
   }
 
-  async remember(isbn) {
+  async remember(isbn, checked) {
+
     let loginCredentials = await this.loginCredentials()
 
-    if (loginCredentials.hasOwnProperty("remember")) {
+    if (isbn) {
+      let store = this.db.transaction("admin", "readwrite").objectStore("admin")
+
+      let request = store.get(isbn);
+
+      request.onerror = (event) => {
+      }
+
+      request.onsuccess = (event) => {
+        let data = event.target.result
+
+        data.remember = checked
+
+        let requestUpdate = store.put(data)
+
+        requestUpdate.onerror = (event) => {
+        }
+
+        requestUpdate.onsuccess = (event) => {
+        }
+      }
+    } else if (loginCredentials.hasOwnProperty("remember")) {
       if (loginCredentials.remember) {
         $("#username").val("admin")
         $("#password").val("admin")
+        $("#remember").prop("checked", true)
       } else {
         $("#username").val("")
         $("#password").val("")
@@ -67,20 +91,89 @@ class DB {
     }
   }
 
-  init() {
-    const request = indexedDB.open("assessment")
-    request.onsuccess = (event) => {
+  addMember(details) {
 
-      let db = event.target.result
+    let {name, age, dob, address, mn, hobbies, status, skn} = details
 
-      const tx = db.transaction("members", "readwrite")
-      const store = tx.objectStore("members")
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open("assessment")
+      request.onsuccess = (event) => {
 
-      store.put({name: "Karan", age: "22", isbn: uuidv4()})
+        let db = event.target.result
 
-      tx.oncomplete = function () {
-        // All requests have succeeded and the transaction has committed.
-        console.log("Done")
+        const tx = db.transaction("members", "readwrite")
+        const store = tx.objectStore("members")
+
+        let isbn = uuidv4()
+
+        store.put({
+          isbn,
+          name,
+          age,
+          dob,
+          address,
+          mn,
+          hobbies,
+          status,
+          skn
+        })
+
+        tx.oncomplete = function () {
+
+          $("table").append(`
+                  <tr>
+                    <td>${Number($("table tr:last").find("td:first").html()) + 1}</td>
+                    <td>${name}</td>
+                    <td>${age}</td>
+                    <td>${dob}</td>
+                    <td>${address.bno}</td>
+                    <td>${address.street}</td>
+                    <td>${address.landmark}</td>
+                    <td>${address.city}</td>
+                    <td>${address.pincode}</td>
+                    <td>${mn}</td>
+                    <td>${hobbies}</td>
+                    <td>${status}</td>
+                    <td>${skn}</td>
+                    <td><input type="checkbox" id=${isbn}></td>
+                </tr>`)
+
+          // All requests have succeeded and the transaction has committed.
+          resolve(1)
+        }
+      }
+    })
+  }
+
+  fetchMembers() {
+
+    let index = 0;
+
+    let store = this.db.transaction("members").objectStore("members")
+
+    store.openCursor().onsuccess = (event) => {
+
+      let cursor = event.target.result
+
+      if (cursor) {
+        $("table").append(`
+                  <tr>
+                    <td>${++index}</td>
+                    <td>${cursor.value.name}</td>
+                    <td>${cursor.value.age}</td>
+                    <td>${cursor.value.dob}</td>
+                    <td>${cursor.value.address.bno}</td>
+                    <td>${cursor.value.address.street}</td>
+                    <td>${cursor.value.address.landmark}</td>
+                    <td>${cursor.value.address.city}</td>
+                    <td>${cursor.value.address.pincode}</td>
+                    <td>${cursor.value.mn}</td>
+                    <td>${cursor.value.hobbies}</td>
+                    <td>${cursor.value.status}</td>
+                    <td>${cursor.value.skn}</td>
+                    <td><input type="checkbox" id=${cursor.value.isbn}></td>
+                </tr>`)
+        cursor.continue()
       }
     }
   }
