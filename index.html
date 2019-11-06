@@ -54,10 +54,17 @@
             <ul>
                 <li><a class="active" href="#" id="view-record">Report</a></li>
                 <li><a href="#" id="add-record">Add Member</a></li>
+                <li id="today-date"><span></span></li>
+                <li id="search-member">
+                    <span>
+                        <label for="search-user">Search</label>
+                        <input type="text" id="search-user" placeholder="Enter User Name" onkeyup="searchUser()" title="Enter User Name">
+                    </span>
+                </li>
             </ul>
         </div>
         <div class="assessment-table" style="overflow-x: auto;">
-            <table>
+            <table id="table">
                 <tr>
                     <th>S.N.</th>
                     <th>Name</th>
@@ -114,9 +121,17 @@
                 <label for="status">Status/JOB</label>
                 <input type="text" name="status" id="status" placeholder="Status/JOB">
             </div>
+            <div class="select-designation">
+                <label for="designation">Select Designation</label>
+                <select name="designation" id="designation">
+                    <option value="member">Member</option>
+                    <option value="skn">Sampark Karyakar</option>
+                </select>
+            </div>
             <div class="add-karyakar-name">
                 <label for="karyakar-name">Sampark Karyakar Name</label>
-                <input type="text" name="karyakar-name" id="karyakar-name" placeholder="Sampark Karyakar Name">
+                <input list="skn" name="karyakar-name" id="karyakar-name" placeholder="Sampark Karyakar Name">
+                <datalist id="skn"></datalist>
             </div>
             <div class="submit">
                 <button id="submit-button">Submit</button>

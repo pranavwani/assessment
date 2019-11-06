@@ -24,7 +24,7 @@ class DB {
 
         store = db.createObjectStore("members", {keyPath: "isbn"})
 
-        store.createIndex("name", "name", {unique: false})
+        store = db.createObjectStore("skn", {keyPath: "isbn"})
       }
 
       request.onsuccess = function (event) {
@@ -93,7 +93,9 @@ class DB {
 
   addMember(details) {
 
-    let {name, age, dob, address, mn, hobbies, status, skn} = details
+    let {name, age, dob, designation, address, mn, hobbies, status, skn} = details
+
+    designation = designation === "member" ? "members" : "skn"
 
     return new Promise((resolve, reject) => {
       const request = indexedDB.open("assessment")
@@ -101,8 +103,8 @@ class DB {
 
         let db = event.target.result
 
-        const tx = db.transaction("members", "readwrite")
-        const store = tx.objectStore("members")
+        const tx = db.transaction(designation, "readwrite")
+        const store = tx.objectStore(designation)
 
         let isbn = uuidv4()
 
@@ -111,6 +113,7 @@ class DB {
           name,
           age,
           dob,
+          designation,
           address,
           mn,
           hobbies,
@@ -173,6 +176,20 @@ class DB {
                     <td>${cursor.value.skn}</td>
                     <td><input type="checkbox" id=${cursor.value.isbn}></td>
                 </tr>`)
+        cursor.continue()
+      }
+    }
+  }
+
+  fetchSk () {
+    let store = this.db.transaction("skn").objectStore("skn")
+
+    store.openCursor().onsuccess = (event) => {
+
+      let cursor = event.target.result
+
+      if (cursor) {
+        $("#skn").append(`<option value=${cursor.value.name}>`)
         cursor.continue()
       }
     }

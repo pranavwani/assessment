@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+  window.skn = [];
+
   // Create DB class instance
   const db = new DB()
 
@@ -7,6 +9,7 @@ $(document).ready(function () {
 
   setTimeout(() => {
     db.fetchMembers()
+    db.fetchSk()
   }, 1000)
 
   // Want to remember username and password
@@ -17,6 +20,21 @@ $(document).ready(function () {
     if (!$(this).is(":checked"))
       await db.remember(loginCredentials.isbn, false)
   })
+
+  let d = new Date()
+
+  let date = d.getDate()
+
+  let month = d.getMonth() + 1
+
+  let year = d.getFullYear()
+
+  $("#today-date span").html(
+    `${String(date).length > 1 ? date : '0' + date} -
+     ${String(month).length > 1 ? month : '0' + month} -
+     ${year}
+    `
+  )
 
   // On click login button
   $("#login-button").on("click", async function (e) {
@@ -76,11 +94,19 @@ $(document).ready(function () {
     $(".assessment-form").css("display", "table")
   })
 
+  $("#designation").on("click", function () {
+    if (this.value === "skn")
+      $(".add-karyakar-name").hide()
+    else if (this.value === "member")
+      $(".add-karyakar-name").show()
+  })
+
   $("#submit-button").on("click", async () => {
     let record = {
       name: $(".add-name input").val(),
       age: $(".add-age input").val(),
       dob: $(".add-dob input").val(),
+      designation: $("#designation").val(),
       address: {
         bno: $("#block-number").val(),
         street: $("#street").val(),
@@ -94,10 +120,32 @@ $(document).ready(function () {
       skn: $(".add-karyakar-name input").val(),
     }
 
+    console.log(record)
+
     let res = await db.addMember(record)
 
     if (res) {
       alert("Member Inserted Successfully.")
     }
   })
+
 })
+
+let searchUser = () => {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("search-user");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("table");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}

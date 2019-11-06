@@ -213,6 +213,29 @@ table, th, td{
     border-radius: 4px;
     cursor: pointer;
 }
+
+#today-date {
+    float: right;
+}
+
+#today-date span {
+    display: block;
+    text-align: center;
+    padding: 14px 16px;
+}
+
+#search-member {
+    float: right;
+    margin-top: 3px;
+}
+
+#search-member span input {
+    width: 300px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
 /*.add-member div{
     display: inline-block;
 }*/
