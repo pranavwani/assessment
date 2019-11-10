@@ -25,6 +25,8 @@ class DB {
         store = db.createObjectStore("members", {keyPath: "isbn"})
 
         store = db.createObjectStore("skn", {keyPath: "isbn"})
+
+        store = db.createObjectStore("present", {keyPath: "date"})
       }
 
       request.onsuccess = function (event) {
@@ -123,7 +125,8 @@ class DB {
 
         tx.oncomplete = function () {
 
-          $("table").append(`
+          if (designation !== "skn")
+            $("table").append(`
                   <tr>
                     <td>${Number($("table tr:last").find("td:first").html()) + 1}</td>
                     <td>${name}</td>
@@ -138,7 +141,8 @@ class DB {
                     <td>${hobbies}</td>
                     <td>${status}</td>
                     <td>${skn}</td>
-                    <td><input type="checkbox" id=${isbn}></td>
+                    <td hidden><input type="checkbox" class="present" id=${isbn}></td>
+                    <td hidden><input type="checkbox" class="absent" id=${isbn}></td>
                 </tr>`)
 
           // All requests have succeeded and the transaction has committed.
@@ -174,14 +178,23 @@ class DB {
                     <td>${cursor.value.hobbies}</td>
                     <td>${cursor.value.status}</td>
                     <td>${cursor.value.skn}</td>
-                    <td><input type="checkbox" id=${cursor.value.isbn}></td>
+                    <td hidden><input type="checkbox" class="present" id=${cursor.value.isbn}></td>
+                    <td hidden><input type="checkbox" class="absent" id=${cursor.value.isbn}></td>
                 </tr>`)
         cursor.continue()
       }
     }
   }
 
-  fetchSk () {
+  fetchSk() {
+
+    let sknLength = $("#skn").children.length
+
+    if (sknLength > 0) {
+      for (let i = 0; i < sknLength; i++)
+        $("#skn").children(i).remove()
+    }
+
     let store = this.db.transaction("skn").objectStore("skn")
 
     store.openCursor().onsuccess = (event) => {
@@ -189,9 +202,35 @@ class DB {
       let cursor = event.target.result
 
       if (cursor) {
-        $("#skn").append(`<option value=${cursor.value.name}>`)
+        $("#skn").append(`<option value="${cursor.value.name}">`)
         cursor.continue()
       }
+    }
+  }
+
+  present(date, isbn) {
+    let store = this.db.transaction("present", "readwrite").objectStore("present")
+
+    let request;
+
+    try {
+      request = store.get(date)
+
+      request.onsuccess = (event) => {
+        let data = event.target.result
+
+        data.members[isbn] = 1
+
+        let requestUpdate = store.put(data)
+
+        requestUpdate.onerror = (event) => {
+        }
+
+        requestUpdate.onsuccess = (event) => {
+        }
+      }
+    } catch (e) {
+      store.put({date, members: {[isbn]: 1}})
     }
   }
 }

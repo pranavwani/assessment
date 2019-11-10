@@ -125,10 +125,18 @@ $(document).ready(function () {
     let res = await db.addMember(record)
 
     if (res) {
+      if(record.designation === "skn")
+        db.fetchSk()
       alert("Member Inserted Successfully.")
     }
   })
 
+  $(document).on("change", ".present", function() {
+
+    let today_date = $("#today-date span").text().replace(/\s/g, "").trim();
+
+    db.present(today_date, $(this).prop("id"))
+  });
 })
 
 let searchUser = () => {
