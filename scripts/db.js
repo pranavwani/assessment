@@ -8,6 +8,9 @@ class DB {
 
       if (this.db)
         await this.remember()
+
+      this.fetchMembers()
+      this.fetchSk()
     })()
   }
 
@@ -125,10 +128,15 @@ class DB {
 
         tx.oncomplete = function () {
 
+          let preId = Number($("table tr:last").find("td:first").html());
+
+          if (Number.isNaN(preId))
+            preId = 0
+
           if (designation !== "skn")
             $("table").append(`
                   <tr>
-                    <td>${Number($("table tr:last").find("td:first").html()) + 1}</td>
+                    <td>${preId + 1}</td>
                     <td>${name}</td>
                     <td>${age}</td>
                     <td>${dob}</td>
@@ -141,8 +149,7 @@ class DB {
                     <td>${hobbies}</td>
                     <td>${status}</td>
                     <td>${skn}</td>
-                    <td hidden><input type="checkbox" class="present" id=${isbn}></td>
-                    <td hidden><input type="checkbox" class="absent" id=${isbn}></td>
+                    <td><input type="checkbox" class="present" id=${isbn}></td>
                 </tr>`)
 
           // All requests have succeeded and the transaction has committed.
@@ -178,8 +185,7 @@ class DB {
                     <td>${cursor.value.hobbies}</td>
                     <td>${cursor.value.status}</td>
                     <td>${cursor.value.skn}</td>
-                    <td hidden><input type="checkbox" class="present" id=${cursor.value.isbn}></td>
-                    <td hidden><input type="checkbox" class="absent" id=${cursor.value.isbn}></td>
+                    <td><input type="checkbox" class="present" id=${cursor.value.isbn}></td>
                 </tr>`)
         cursor.continue()
       }
@@ -208,7 +214,8 @@ class DB {
     }
   }
 
-  present(date, isbn) {
+  present(date, isbn, checked) {
+    console.log(date, isbn, checked)
     let store = this.db.transaction("present", "readwrite").objectStore("present")
 
     let request;
@@ -216,21 +223,47 @@ class DB {
     try {
       request = store.get(date)
 
+      request.onerror = (event) => {
+        console.log(event.target)
+      }
+
       request.onsuccess = (event) => {
         let data = event.target.result
 
-        data.members[isbn] = 1
+        if (typeof data === "undefined")
+          store.put({date, members: {[isbn]: checked ? 1 : 0}})
+        else {
+          data.members[isbn] = checked ? 1 : 0
 
-        let requestUpdate = store.put(data)
+          let requestUpdate = store.put(data)
 
-        requestUpdate.onerror = (event) => {
-        }
+          requestUpdate.onerror = (event) => {
+          }
 
-        requestUpdate.onsuccess = (event) => {
+          requestUpdate.onsuccess = (event) => {
+          }
         }
       }
     } catch (e) {
-      store.put({date, members: {[isbn]: 1}})
+      console.log(e)
+    }
+  }
+
+  fetchPresent() {
+    let store = this.db.transaction("present").objectStore("present")
+
+    let today_date = $("#today-date span").text().replace(/\s/g, "").trim()
+
+    let request = store.get(today_date)
+
+    request.onsuccess = (event) => {
+
+      let data = event.target.result
+
+      console.log(data)
+
+      for (let member in data["members"])
+        $(`#table #${member}`).prop("checked", data["members"][member])
     }
   }
 }

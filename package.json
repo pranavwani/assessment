@@ -1,19 +1,25 @@
 {
   "name": "Assesment",
   "version": "1.0.0",
-  "description": "",
+  "description": "Assessment App",
   "main": "app.js",
   "scripts": {
     "start": "electron app.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "electron": "^6.0.7",
-    "electron-promise-ipc": "^1.6.0",
-    "express": "^4.17.1",
-    "express-session": "^1.16.2",
-    "uuid": "^3.3.3"
+  "author": "Pranav Wani <pranavwani94@gmail.com>",
+  "license": "ISC",
+  "dependencies": {},
+  "build": {
+    "productName": "Assessment",
+    "appId": "com.assessment.app",
+    "afterPack": "scripts/after-pack.js",
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "devDependencies": {
+    "electron": "^7.1.1"
   }
 }

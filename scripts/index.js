@@ -7,10 +7,14 @@ $(document).ready(function () {
 
   let username, password
 
+   /* setTimeout(() => {
+      db.fetchMembers()
+      db.fetchSk()
+    })*/
+
   setTimeout(() => {
-    db.fetchMembers()
-    db.fetchSk()
-  }, 1000)
+    db.fetchPresent()
+  }, 2000)
 
   // Want to remember username and password
   $("#remember").change(async function () {
@@ -132,10 +136,9 @@ $(document).ready(function () {
   })
 
   $(document).on("change", ".present", function() {
-
     let today_date = $("#today-date span").text().replace(/\s/g, "").trim();
 
-    db.present(today_date, $(this).prop("id"))
+    db.present(today_date, $(this).prop("id"), $(this).prop("checked"))
   });
 })
 
