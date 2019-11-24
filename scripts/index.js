@@ -33,12 +33,11 @@ $(document).ready(function () {
 
   let year = d.getFullYear()
 
-  $("#today-date span").html(
-    `${String(date).length > 1 ? date : '0' + date} -
-     ${String(month).length > 1 ? month : '0' + month} -
-     ${year}
-    `
-  )
+  $("#current-date").val(`${year}-${String(month).length > 1 ? month : '0' + month}-${String(date).length > 1 ? date : '0' + date}`)
+
+  $("#current-date").on("change", function () {
+    db.fetchPresent()
+  })
 
   // On click login button
   $("#login-button").on("click", async function (e) {
@@ -136,7 +135,7 @@ $(document).ready(function () {
   })
 
   $(document).on("change", ".present", function() {
-    let today_date = $("#today-date span").text().replace(/\s/g, "").trim();
+    let today_date = $("#current-date").val().replace(/\s/g, "").trim();
 
     db.present(today_date, $(this).prop("id"), $(this).prop("checked"))
   });

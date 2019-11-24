@@ -18,21 +18,34 @@ class DB {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open("assessment")
 
-      request.onupgradeneeded = function (event) {
+      request.onupgradeneeded = function(event) {
         let db = event.target.result
 
-        let store = db.createObjectStore("admin", {keyPath: "isbn"})
+        let store = db.createObjectStore("admin", {
+          keyPath: "isbn"
+        })
 
-        store.put({name: "admin", password: "admin", remember: true, isbn: uuidv4()})
+        store.put({
+          name: "admin",
+          password: "admin",
+          remember: true,
+          isbn: uuidv4()
+        })
 
-        store = db.createObjectStore("members", {keyPath: "isbn"})
+        store = db.createObjectStore("members", {
+          keyPath: "isbn"
+        })
 
-        store = db.createObjectStore("skn", {keyPath: "isbn"})
+        store = db.createObjectStore("skn", {
+          keyPath: "isbn"
+        })
 
-        store = db.createObjectStore("present", {keyPath: "date"})
+        store = db.createObjectStore("present", {
+          keyPath: "date"
+        })
       }
 
-      request.onsuccess = function (event) {
+      request.onsuccess = function(event) {
         /*console.log(request.result) // or
         console.log(event.target.result);*/
         resolve(event.target.result)
@@ -68,8 +81,7 @@ class DB {
 
       let request = store.get(isbn);
 
-      request.onerror = (event) => {
-      }
+      request.onerror = (event) => {}
 
       request.onsuccess = (event) => {
         let data = event.target.result
@@ -78,11 +90,9 @@ class DB {
 
         let requestUpdate = store.put(data)
 
-        requestUpdate.onerror = (event) => {
-        }
+        requestUpdate.onerror = (event) => {}
 
-        requestUpdate.onsuccess = (event) => {
-        }
+        requestUpdate.onsuccess = (event) => {}
       }
     } else if (loginCredentials.hasOwnProperty("remember")) {
       if (loginCredentials.remember) {
@@ -98,7 +108,17 @@ class DB {
 
   addMember(details) {
 
-    let {name, age, dob, designation, address, mn, hobbies, status, skn} = details
+    let {
+      name,
+      age,
+      dob,
+      designation,
+      address,
+      mn,
+      hobbies,
+      status,
+      skn
+    } = details
 
     designation = designation === "member" ? "members" : "skn"
 
@@ -126,7 +146,7 @@ class DB {
           skn
         })
 
-        tx.oncomplete = function () {
+        tx.oncomplete = function() {
 
           let preId = Number($("table tr:last").find("td:first").html());
 
@@ -231,17 +251,20 @@ class DB {
         let data = event.target.result
 
         if (typeof data === "undefined")
-          store.put({date, members: {[isbn]: checked ? 1 : 0}})
+          store.put({
+            date,
+            members: {
+              [isbn]: checked ? 1 : 0
+            }
+          })
         else {
           data.members[isbn] = checked ? 1 : 0
 
           let requestUpdate = store.put(data)
 
-          requestUpdate.onerror = (event) => {
-          }
+          requestUpdate.onerror = (event) => {}
 
-          requestUpdate.onsuccess = (event) => {
-          }
+          requestUpdate.onsuccess = (event) => {}
         }
       }
     } catch (e) {
@@ -252,9 +275,13 @@ class DB {
   fetchPresent() {
     let store = this.db.transaction("present").objectStore("present")
 
-    let today_date = $("#today-date span").text().replace(/\s/g, "").trim()
+    let current_date = $("#current-date").val().replace(/\s/g, "").trim()
 
-    let request = store.get(today_date)
+    let request = store.get(current_date)
+
+    request.onerror = (event) => {
+      console.log(event.target);
+    }
 
     request.onsuccess = (event) => {
 
@@ -262,8 +289,12 @@ class DB {
 
       console.log(data)
 
-      for (let member in data["members"])
-        $(`#table #${member}`).prop("checked", data["members"][member])
+      if (data) {
+        for (let member in data["members"])
+          $(`#table #${member}`).prop("checked", data["members"][member])
+      } else {
+        $(`#table input[type=checkbox]`).prop("checked", false)
+      }
     }
   }
 }
